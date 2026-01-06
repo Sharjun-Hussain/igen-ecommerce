@@ -45,55 +45,55 @@
 
 :root {
   /* FONTS */
-  --font-sans: 'Geist Sans', sans-serif;
-  --font-mono: 'Geist Mono', monospace;
+  --font-sans: "Geist Sans", sans-serif;
+  --font-mono: "Geist Mono", monospace;
 
   /* BACKGROUND & FOREGROUND */
-  --background: #F9FAFB;
+  --background: #f9fafb;
   /* soft light background */
   --foreground: #374151;
   /* dark gray text */
 
   /* CARD & POPOVER */
-  --card: #FFFFFF;
+  --card: #ffffff;
   /* card background */
   --card-foreground: #111827;
   /* heading text */
 
-  --popover: #FFFFFF;
+  --popover: #ffffff;
   --popover-foreground: #111827;
 
   /* PRIMARY & SECONDARY */
-  --primary: #2563EB;
+  --primary: #2563eb;
   /* blue for CTA */
-  --primary-foreground: #FFFFFF;
+  --primary-foreground: #ffffff;
   /* text on primary button */
 
-  --secondary: #6366F1;
+  --secondary: #6366f1;
   /* secondary buttons */
-  --secondary-foreground: #FFFFFF;
+  --secondary-foreground: #ffffff;
 
   /* ACCENT */
-  --accent: #F59E0B;
+  --accent: #f59e0b;
   /* highlight, discount, offers */
   --accent-foreground: #111827;
 
   /* MUTED / NEUTRAL */
-  --muted: #E5E7EB;
+  --muted: #e5e7eb;
   /* neutral elements, borders */
-  --muted-foreground: #6B7280;
+  --muted-foreground: #6b7280;
   /* secondary text / placeholder */
 
   /* STATUS */
-  --success: #22C55E;
+  --success: #22c55e;
   /* success messages */
-  --error: #EF4444;
+  --error: #ef4444;
   /* error messages */
 
   /* INPUTS & BORDER */
-  --input: #F3F4F6;
-  --border: #E5E7EB;
-  --ring: #2563EB;
+  --input: #f3f4f6;
+  --border: #e5e7eb;
+  --ring: #2563eb;
 
   /* RADIUS */
   --radius: 0.65rem;
@@ -105,44 +105,44 @@
 
 .dark {
   /* BACKGROUND & FOREGROUND */
-  --background: #1F2937;
+  --background: #1f2937;
   /* soft dark background */
-  --foreground: #D1D5DB;
+  --foreground: #d1d5db;
   /* light gray text */
 
   /* CARD & POPOVER */
   --card: #111827;
-  --card-foreground: #F3F4F6;
+  --card-foreground: #f3f4f6;
 
   --popover: #111827;
-  --popover-foreground: #F3F4F6;
+  --popover-foreground: #f3f4f6;
 
   /* PRIMARY & SECONDARY */
-  --primary: #3B82F6;
+  --primary: #3b82f6;
   /* lighter blue for dark mode */
-  --primary-foreground: #FFFFFF;
+  --primary-foreground: #ffffff;
 
-  --secondary: #818CF8;
+  --secondary: #818cf8;
   /* lighter indigo for dark mode */
   --secondary-foreground: #111827;
 
   /* ACCENT */
-  --accent: #FBBF24;
+  --accent: #fbbf24;
   /* gold-ish highlight */
   --accent-foreground: #111827;
 
   /* MUTED / NEUTRAL */
   --muted: #374151;
   /* borders / neutral background */
-  --muted-foreground: #9CA3AF;
+  --muted-foreground: #9ca3af;
   /* secondary text */
 
   /* STATUS */
-  --success: #22C55E;
-  --error: #EF4444;
+  --success: #22c55e;
+  --error: #ef4444;
 
   /* INPUTS & BORDER */
   --input: #374151;
-  --border: #4B5563;
-  --ring: #3B82F6;
+  --border: #4b5563;
+  --ring: #3b82f6;
 }

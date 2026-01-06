@@ -1,24 +1,26 @@
+import { ProductCategories } from "@/Sections/Categories/Category";
+import { ProductDealsSection } from "@/Sections/Deals/Deals";
+import Footer from "@/Sections/Footer/Footer";
+import { Header } from "@/Sections/Header/Header";
 
-import { ProductCategories } from '@/Sections/Categories/Category'
-import { ProductDealsSection } from '@/Sections/Deals/Deals'
-import Footer from '@/Sections/Footer/Footer'
-import { Header } from '@/Sections/Header/Header'
-
-import { HeroCarousel } from '@/Sections/Hero/Hero'
-import Head from 'next/head'
-import React, { Fragment } from 'react'
-import { headphoneDeals, laptopDeals } from './Data'
-import FlashDealComponent from '@/Sections/FlashDeals/FlashDeals'
-import BrandsSection from '@/Sections/Brands/BrandsInfinity'
-import BrandShowcaseEnhanced from '@/Sections/Brands/BrandsInfinity'
-import NewArrivalsSection from '@/Sections/NewArrivals/NewArrival'
+import { HeroCarousel } from "@/Sections/Hero/Hero";
+import Head from "next/head";
+import React, { Fragment } from "react";
+import { headphoneDeals, laptopDeals } from "./Data";
+import FlashDealComponent from "@/Sections/FlashDeals/FlashDeals";
+import BrandsSection from "@/Sections/Brands/BrandsInfinity";
+import BrandShowcaseEnhanced from "@/Sections/Brands/BrandsInfinity";
+import NewArrivalsSection from "@/Sections/NewArrivals/NewArrival";
 
 const page = () => {
   return (
-    <Fragment >
-      <div className=''>
+    <Fragment>
+      <div className="">
         <Header />
-        <section className=''> <HeroCarousel /></section>
+        <section className="">
+          {" "}
+          <HeroCarousel />
+        </section>
         <ProductCategories />
         <ProductDealsSection title="Laptops" products={laptopDeals} />
         <FlashDealComponent />
@@ -28,10 +30,10 @@ const page = () => {
       </div>
       <Footer />
     </Fragment>
-  )
-}
+  );
+};
 
-export default page
+export default page;
 
 export const metadata = {
   title: "Home Page - E-Commerce Website",

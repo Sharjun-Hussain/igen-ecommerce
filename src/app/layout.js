@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Inzeedo E-Commerce ",
-  description: "all in one electronic product under the hood",
+  title: "igen - Premium Mobile Shop",
+  description: "Your one-stop shop for mobiles, accessories, and gadgets",
 };
 
 export default function RootLayout({ children }) {
@@ -26,14 +26,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StoreProvider>
-
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
-
             {children}
           </ThemeProvider>
         </StoreProvider>
