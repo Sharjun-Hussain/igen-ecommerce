@@ -146,3 +146,13 @@
   --border: #4b5563;
   --ring: #3b82f6;
 }
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}

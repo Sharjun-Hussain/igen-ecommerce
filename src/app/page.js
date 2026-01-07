@@ -29,8 +29,8 @@ const page = () => {
         <ProductDealsSection title="Smart Phones" products={laptopDeals} />
         <BrandShowcaseEnhanced />
         <BentoGridSection/>
-        <TrendingSection/>
-        {/* <NewArrivalsSection /> */}
+        <TrendingSection/> 
+        <NewArrivalsSection />
       </div>
       <Footer />
     </Fragment>
