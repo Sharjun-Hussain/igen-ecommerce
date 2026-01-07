@@ -6,14 +6,14 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Star,
-  ShoppingCart,
+  ShoppingBag,
   Heart,
   Eye,
   ChevronLeft,
   ChevronRight,
   Smartphone,
   Cpu,
-  Zap,
+  Wifi,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -24,7 +24,6 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-// --- Enhanced Product Data ---
 const products = [
   {
     id: 1,
@@ -34,12 +33,11 @@ const products = [
     originalPrice: 1299,
     rating: 4.9,
     reviews: 128,
-    // Two images for hover effect
     imageFront:
       "https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=600",
     imageBack:
       "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600",
-    colors: ["#3f3f46", "#f4f4f5", "#2563eb"], // Hex codes for dots
+    colors: ["#3f3f46", "#f4f4f5", "#2563eb"],
     specs: { storage: "256GB", ram: "8GB", network: "5G" },
     tag: "Titanium",
   },
@@ -80,7 +78,7 @@ const products = [
     name: "Sony Xperia 1 V",
     brand: "Sony",
     price: 1399,
-    originalPrice: null, // No discount
+    originalPrice: null,
     rating: 4.6,
     reviews: 45,
     imageFront:
@@ -115,213 +113,168 @@ export default function TrendingSection() {
 
   useGSAP(
     () => {
-      // Background Parallax
+      const cards = gsap.utils.toArray(".product-card");
       gsap.fromTo(
-        ".bg-grid-pattern",
-        { y: -20, opacity: 0 },
+        cards,
+        { y: 50, opacity: 0 },
         {
           y: 0,
-          opacity: 0.4,
-          duration: 1.5,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
         }
       );
     },
     { scope: sectionRef }
   );
 
-  // Scroll Helpers
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -350, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: -360, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 350, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: 360, behavior: "smooth" });
     }
   };
 
   return (
     <section
       ref={sectionRef}
-      className="relative w-full py-28 overflow-hidden bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300"
+      className="relative w-full py-24 overflow-hidden bg-zinc-50 dark:bg-black transition-colors duration-300"
     >
-      {/* --- DECORATIVE BACKGROUND --- */}
-      {/* Fading Gradient from top */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-zinc-50 to-transparent dark:from-zinc-950 z-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:24px_24px] opacity-70" />
 
-      {/* Subtle Grid Pattern */}
-      <div
-        className="bg-grid-pattern absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
-        style={{
-          backgroundImage: `linear-gradient(#9ca3af 1px, transparent 1px), linear-gradient(to right, #9ca3af 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* Glowing Orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 dark:bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
-
-      <div className="container relative z-20 mx-auto px-4">
-        {/* Header with Navigation */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div>
-            <span className="text-blue-600 dark:text-blue-500 font-bold tracking-wider uppercase text-xs mb-2 block">
-              Weekly Highlights
-            </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-3">
+      <div className="container relative z-10 mx-auto px-4">
+        {/* --- HEADER CHANGE IS HERE --- */}
+        <div className="flex flex-row justify-between items-end mb-12 gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="h-px w-8 bg-blue-600 dark:bg-blue-500"></span>
+              <span className="text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase text-xs">
+                Weekly Selection
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white tracking-tight">
               Trending Devices
             </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 max-w-lg text-lg">
-              Top-rated smartphones and gear selected by our tech experts.
-            </p>
           </div>
 
-          {/* Scroll Buttons */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 shrink-0 mb-1">
             <button
               onClick={scrollLeft}
-              className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              className="group p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:border-zinc-900 dark:hover:border-white hover:text-zinc-900 dark:hover:text-white transition-all duration-300"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5 group-active:-translate-x-0.5 transition-transform" />
             </button>
             <button
               onClick={scrollRight}
-              className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 transition-opacity shadow-lg"
+              className="group p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:border-zinc-900 dark:hover:border-white hover:text-zinc-900 dark:hover:text-white transition-all duration-300"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5 group-active:translate-x-0.5 transition-transform" />
             </button>
           </div>
         </div>
 
-        {/* Horizontal Scroll Area */}
         <div
           ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto pb-16 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
+          className="flex gap-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="group min-w-[300px] md:min-w-[340px] snap-center relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-zinc-900/50 transition-all duration-500"
+              className="product-card group min-w-[320px] md:min-w-[360px] snap-center bg-white dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 rounded-[2rem] overflow-hidden hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500"
             >
-              {/* --- IMAGE AREA --- */}
-              <div className="relative h-[320px] bg-zinc-100 dark:bg-zinc-950/50 overflow-hidden p-6 flex items-center justify-center">
-                {/* Badge */}
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full shadow-lg">
+              <div className="relative h-[400px] overflow-hidden p-8">
+                <div className="absolute inset-0 bg-gradient-to-tr from-zinc-100/50 to-zinc-50/0 dark:from-zinc-800/20 dark:to-transparent transition-opacity duration-500" />
+
+                <div className="relative z-20 flex justify-between items-start">
+                  <span className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-zinc-900/5 dark:bg-white/10 text-zinc-900 dark:text-white backdrop-blur-md rounded-full">
                     {product.tag}
                   </span>
+
+                  <div className="flex flex-col gap-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                    <button className="p-2.5 rounded-full bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-lg hover:bg-blue-500 hover:text-white transition-colors">
+                      <Heart className="w-4 h-4" />
+                    </button>
+                    <button className="p-2.5 rounded-full bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-lg hover:bg-blue-500 hover:text-white transition-colors delay-75">
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Wishlist Button */}
-                <button className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all shadow-sm">
-                  <Heart className="w-4 h-4" />
-                </button>
-
-                {/* Main Images (Swap on Hover) */}
-                <div className="relative w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
-                  {/* Front Image */}
+                <div className="absolute inset-0 flex items-center justify-center p-8 transition-transform duration-700 ease-out group-hover:scale-110">
                   <img
                     src={product.imageFront}
                     alt={product.name}
-                    className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity duration-500 group-hover:opacity-0"
+                    className="absolute max-w-[85%] max-h-[85%] object-contain drop-shadow-xl z-10 transition-opacity duration-500 group-hover:opacity-0"
                   />
-                  {/* Back Image (Revealed on Hover) */}
                   <img
                     src={product.imageBack}
                     alt={product.name}
-                    className="absolute inset-0 w-full h-full object-contain z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 scale-110"
+                    className="absolute max-w-[85%] max-h-[85%] object-contain drop-shadow-xl z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
-                </div>
-
-                {/* Quick View Button (Slide Up on Hover) */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-100">
-                  <button className="flex items-center gap-2 px-5 py-2.5 bg-white/90 dark:bg-black/80 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-xl hover:scale-105 transition-transform">
-                    <Eye className="w-3.5 h-3.5" /> Quick View
-                  </button>
                 </div>
               </div>
 
-              {/* --- DETAILS AREA --- */}
-              <div className="flex-1 p-6 flex flex-col gap-4">
-                {/* Color Swatches */}
-                <div className="flex gap-2 mb-1">
-                  {product.colors.map((color, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 cursor-pointer hover:scale-125 transition-transform",
-                        i === 0
-                          ? "ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600 dark:ring-offset-zinc-900"
-                          : ""
-                      )}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                  <span className="text-xs text-zinc-400 ml-2 pt-0.5">
-                    +2 more
-                  </span>
-                </div>
-
-                {/* Title & Reviews */}
-                <div>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 mb-1 block">
-                        {product.brand}
-                      </span>
-                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white leading-tight">
-                        {product.name}
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/30 px-2 py-1 rounded-md">
-                      <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                      <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+              <div className="p-6 pt-2 flex flex-col gap-4">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                      {product.brand}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                         {product.rating}
                       </span>
                     </div>
                   </div>
+                  <h3 className="font-bold text-xl text-zinc-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {product.name}
+                  </h3>
                 </div>
 
-                {/* Specs Grid (Mini) */}
-                <div className="grid grid-cols-3 gap-2 py-3 border-y border-zinc-100 dark:border-zinc-800">
-                  <div className="flex flex-col items-center gap-1 text-center">
-                    <Smartphone className="w-4 h-4 text-zinc-400" />
-                    <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-300">
-                      {product.specs.storage}
-                    </span>
+                <div className="flex items-center gap-3 py-3 overflow-hidden">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                    <Smartphone className="w-3.5 h-3.5" />{" "}
+                    {product.specs.storage}
                   </div>
-                  <div className="flex flex-col items-center gap-1 text-center border-l border-zinc-100 dark:border-zinc-800">
-                    <Cpu className="w-4 h-4 text-zinc-400" />
-                    <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-300">
-                      {product.specs.ram}
-                    </span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                    <Cpu className="w-3.5 h-3.5" /> {product.specs.ram}
                   </div>
-                  <div className="flex flex-col items-center gap-1 text-center border-l border-zinc-100 dark:border-zinc-800">
-                    <Zap className="w-4 h-4 text-zinc-400" />
-                    <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-300">
-                      {product.specs.network}
-                    </span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                    <Wifi className="w-3.5 h-3.5" /> {product.specs.network}
                   </div>
                 </div>
 
-                {/* Price & Action */}
-                <div className="flex items-center justify-between mt-auto">
+                <div className="h-px w-full bg-zinc-100 dark:bg-zinc-800" />
+
+                <div className="flex items-center justify-between mt-1">
                   <div className="flex flex-col">
-                    {product.originalPrice && (
-                      <span className="text-xs text-zinc-400 line-through">
-                        ${product.originalPrice}
-                      </span>
-                    )}
-                    <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                      ${product.price}
+                    <span className="text-xs text-zinc-400 font-medium">
+                      Price
                     </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xl font-bold text-zinc-900 dark:text-white">
+                        ${product.price}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-zinc-400 line-through decoration-zinc-400/50">
+                          ${product.originalPrice}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-black hover:scale-110 transition-transform shadow-md">
-                    <ShoppingCart className="w-4 h-4" />
+
+                  <button className="group/btn relative flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black font-semibold text-sm hover:scale-105 transition-all shadow-md hover:shadow-xl hover:shadow-zinc-500/20 active:scale-95">
+                    <span className="hidden sm:inline">Add</span>
+                    <ShoppingBag className="w-4 h-4" />
                   </button>
                 </div>
               </div>
