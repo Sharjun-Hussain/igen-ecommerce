@@ -4,604 +4,541 @@ import {
   Search,
   ShoppingCart,
   Menu,
-  MapPin,
   Package,
-  Tag,
-  ChevronDown,
-  User,
-  Phone,
-  Star,
   Heart,
-  Truck,
-  Shield,
-  Award,
-  Clock,
+  User,
   Sun,
   Moon,
-  X,
-  MenuIcon,
-  MenuSquareIcon,
-  HeartMinusIcon,
-  LayoutDashboard,
-  LayoutGrid,
+  ChevronRight,
+  ChevronDown,
+  Smartphone,
+  Headphones,
+  Watch,
+  Tag,
+  Zap,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
+  SheetClose, // Added for better UX
 } from "@/components/ui/sheet";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { cn } from "@/lib/utils";
 
+// Enhanced Data Structure
 const categories = [
   {
     name: "Mobiles",
-    icon: "📱",
-    hasDropdown: true,
+    icon: <Smartphone className="h-5 w-5" />,
+    description: "Latest smartphones & flagship devices",
     subcategories: [
-      "New Mobiles",
-      "Used Mobiles",
-      "Refurbished Mobiles",
-      "Apple (iPhone)",
-      "Samsung",
-      "Xiaomi / Redmi",
-      "Oppo",
-      "Vivo",
-      "OnePlus",
-      "Google Pixel",
-      "Other Brands",
-    ],
-    image: "/static/cat3.jpg",
-  },
-  {
-    name: "Mobile Accessories",
-    icon: "🎧",
-    hasDropdown: true,
-    subcategories: [
-      "Phone Covers & Cases",
-      "Screen Protectors",
-      "Chargers & Cables",
-      "Earphones & Headphones",
-      "Power Banks",
-      "Mobile Holders / Stands",
-      "Wireless Chargers",
-      "Memory Cards & USB",
-    ],
-    image: "/static/cat5.jpg",
-  },
-  {
-    name: "Gadgets",
-    icon: "⌚",
-    hasDropdown: true,
-    subcategories: [
-      "Smart Watches",
-      "Wireless Earbuds (TWS)",
-      "Bluetooth Speakers",
-      "Fitness Bands",
-      "Car Accessories",
-      "Gaming Accessories",
-      "Camera Accessories",
-      "Lifestyle Gadgets",
-    ],
-    image: "/static/cat8.jpg",
-  },
-  {
-    name: "Offers & Deals",
-    icon: "🏷️",
-    hasDropdown: true,
-    subcategories: [
-      "Gadget Deals",
-      "Combo Offers",
-      "Clearance Sale",
       "New Arrivals",
+      "Apple iPhone",
+      "Samsung Galaxy",
+      "Google Pixel",
+      "Refurbished",
     ],
-    image: "/static/cat6.jpg",
+    featuredBg:
+      "bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/20 dark:to-blue-900/20",
+  },
+  {
+    name: "Audio & Sound",
+    icon: <Headphones className="h-5 w-5" />,
+    description: "Immersive audio equipment",
+    subcategories: [
+      "TWS Earbuds",
+      "Noise Cancelling",
+      "Bluetooth Speakers",
+      "Home Audio",
+      "Professional Gear",
+    ],
+    featuredBg:
+      "bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20",
+  },
+  {
+    name: "Smart Wearables",
+    icon: <Watch className="h-5 w-5" />,
+    description: "Watches, bands & health trackers",
+    subcategories: [
+      "Apple Watch",
+      "Galaxy Watch",
+      "Fitness Bands",
+      "Smart Rings",
+      "Accessories",
+    ],
+    featuredBg:
+      "bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20",
+  },
+  {
+    name: "Exclusive Deals",
+    icon: <Zap className="h-5 w-5" />,
+    description: "Limited time offers & clearances",
+    subcategories: [
+      "Flash Sales",
+      "Clearance",
+      "Bundle Offers",
+      "Student Discounts",
+    ],
+    featuredBg:
+      "bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/20",
   },
 ];
 
 export function Header() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-
-  const [mounted, setMounted] = useState(false);
-  // FIX: Removed unused 'mounted' state and useEffect for cleaner code.
-  const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState(null);
-  const [isClosing, setIsClosing] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState(categories[0].name);
+  const menuRef = useRef(null);
 
-  // Handle scroll to hide promotional bar
+  // Scroll detection
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleWishlistClick = () => {
-    router.push("/wishlist");
-  };
-
-  const toggleMegaMenu = () => {
-    if (isMegaMenuOpen) {
-      // Start closing animation
-      setIsClosing(true);
-      setTimeout(() => {
-        setIsMegaMenuOpen(false);
-        setIsClosing(false);
-      }, 300);
-    } else {
-      setIsMegaMenuOpen(true);
-      setIsClosing(false);
-    }
-  };
-
-  const closeMegaMenu = () => {
-    // Start closing animation
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsMegaMenuOpen(false);
-      setIsClosing(false);
-    }, 300);
-  };
-
-  // Close mega menu when clicking outside
+  // Click outside mega menu
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMegaMenuOpen && !event.target.closest(".mega-menu-container")) {
-        closeMegaMenu();
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMegaMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMegaMenuOpen]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <header className="w-full sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm">
-      {/* Promotional Top Bar - Hidden when scrolled */}
+    <div className="flex flex-col w-full z-50">
+      {/* 1. TOP BAR */}
       <div
-        className={`hidden md:block bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800/30 transition-all duration-300 ${isScrolled ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"}`}
+        className={cn(
+          "w-full bg-slate-950 text-white dark:bg-black transition-all duration-300 overflow-hidden",
+          isScrolled ? "h-0" : "h-9"
+        )}
       >
-        <div className="max-w-7xl mx-auto px-4 py-2">
-          <div className="flex flex-col md:flex-row items-center justify-between text-sm text-blue-700 dark:text-blue-300">
-            <div className="flex items-center gap-1 mb-2 md:mb-0">
-              <span className="flex items-center gap-1">
-                <Truck className="h-4 w-4" />
-                Free delivery on orders over $50
-              </span>
-            </div>
-            <div className="flex items-center gap-4 md:gap-6 text-xs md:text-sm">
-              <div className="flex items-center gap-1 hover:text-blue-900 dark:hover:text-blue-100 cursor-pointer transition-colors">
-                <MapPin className="h-4 w-4" />
-                <span className="hidden sm:inline">Deliver to 423651</span>
-              </div>
-              <div className="hidden md:flex items-center gap-1 hover:text-blue-900 dark:hover:text-blue-100 cursor-pointer transition-colors">
-                <Package className="h-4 w-4" />
-                <span>Track your order</span>
-              </div>
-              <div className="hidden lg:flex items-center gap-1 hover:text-blue-900 dark:hover:text-blue-100 cursor-pointer transition-colors">
-                <Tag className="h-4 w-4" />
-                <span>All Offers</span>
-              </div>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between text-[11px] font-medium tracking-wide uppercase">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5 opacity-80 hover:opacity-100 cursor-pointer transition-opacity">
+              <Package className="h-3 w-3" /> Worldwide Shipping
+            </span>
+            <span className="hidden sm:flex items-center gap-1.5 opacity-80 hover:opacity-100 cursor-pointer transition-opacity">
+              <Tag className="h-3 w-3" /> Voucher Codes
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="hover:text-blue-400 cursor-pointer transition-colors">
+              Help Center
+            </span>
+            <span className="hover:text-blue-400 cursor-pointer transition-colors">
+              Track Order
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Main Header - Always sticky */}
-      <div className="bg-white dark:bg-gray-900  dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            {/* Mobile Menu Button and Logo */}
-            <div className="flex items-center gap-2 mega-menu-container">
-              <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      {/* 2. MAIN HEADER */}
+      <header
+        ref={menuRef}
+        className={cn(
+          "sticky top-0 w-full transition-all duration-300 border-b z-40",
+          isScrolled
+            ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-gray-200 dark:border-gray-800 shadow-sm py-2"
+            : "bg-white dark:bg-gray-950 border-transparent py-4"
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-6 lg:gap-8">
+            {/* Logo Area & Mobile Menu */}
+            <div className="flex items-center gap-4">
+              <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="lg:hidden -ml-2"
+                  >
                     <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
+
+                {/* --- FIX: POPULATED MOBILE MENU CONTENT --- */}
                 <SheetContent
                   side="left"
-                  className="w-80 sm:w-96 p-0 bg-white dark:bg-gray-900"
+                  className="w-[300px] sm:w-[400px] overflow-y-auto p-0"
                 >
-                  <div className="flex items-center justify-between p-4 border-b dark:border-gray-800">
-                    <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                      <ShoppingCart className="h-6 w-6" />
-                      igen
-                    </h2>
-                    {/* FIX: Added a close button inside the sheet for better UX */}
-                    <SheetClose asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <X className="h-5 w-5" />
-                      </Button>
-                    </SheetClose>
-                  </div>
-                  <div className="p-4">
-                    <div className="mb-6">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                        <Input
-                          type="search"
-                          placeholder="Search products..."
-                          className="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 rounded-full"
-                        />
-                      </div>
+                  <div className="flex flex-col gap-6 p-6">
+                    <div className="font-bold text-2xl flex items-center gap-1">
+                      igen<span className="text-blue-600">.</span>
                     </div>
-                    {/* FIX: Wrapped navigation items in SheetClose and converted to Links */}
-                    <div className="space-y-2">
-                      <SheetClose asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Link href="/auth/signin">
-                            <User className="h-5 w-5" />
-                            Sign Up/Sign In
-                          </Link>
-                        </Button>
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Link href="/location">
-                            <MapPin className="h-5 w-5" />
-                            Delivery Location
-                          </Link>
-                        </Button>
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Link href="/orders">
-                            <Package className="h-5 w-5" />
-                            Orders
-                          </Link>
-                        </Button>
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Link href="/wishlist">
-                            <Heart className="h-5 w-5" />
-                            Wishlist
-                          </Link>
-                        </Button>
-                      </SheetClose>
+
+                    {/* Mobile Search */}
+                    <div className="relative w-full md:hidden">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        placeholder="Search products..."
+                        className="pl-9 bg-slate-100 dark:bg-slate-900 border-none h-10 rounded-full"
+                      />
                     </div>
-                    <div className="mt-6 pt-4 border-t dark:border-gray-800">
-                      <h3 className="font-semibold mb-2">Categories</h3>
-                      <div className="space-y-1">
-                        {categories.map((category) => (
-                          // This was already correct, but wrapping in SheetClose is a good practice
-                          <SheetClose asChild key={category.name}>
-                            <Button
-                              variant="ghost"
-                              className="w-full justify-start gap-2"
+
+                    {/* Mobile Navigation Links */}
+                    <div className="flex flex-col gap-1">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                        Menu
+                      </p>
+                      {["Deals", "What's New", "Delivery"].map((item) => (
+                        <Link
+                          key={item}
+                          href="#"
+                          className="py-2 text-base font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
+                        >
+                          {item}
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
+
+                    {/* Mobile Categories (Collapsible) */}
+                    <div className="flex flex-col gap-2">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                        Categories
+                      </p>
+                      {categories.map((cat) => (
+                        <details key={cat.name} className="group">
+                          <summary className="flex items-center justify-between py-2 text-base font-medium text-slate-700 dark:text-slate-200 cursor-pointer list-none select-none hover:text-blue-600 transition-colors">
+                            <span className="flex items-center gap-3">
+                              <span className="text-slate-400 group-hover:text-blue-500">
+                                {cat.icon}
+                              </span>
+                              {cat.name}
+                            </span>
+                            <ChevronDown className="h-4 w-4 text-slate-400 transition-transform duration-200 group-open:rotate-180" />
+                          </summary>
+                          <div className="pl-9 flex flex-col gap-2 mt-1 mb-2 border-l-2 border-slate-100 dark:border-slate-800 ml-2.5">
+                            {cat.subcategories.map((sub) => (
+                              <Link
+                                key={sub}
+                                href="#"
+                                className="text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white py-1 pl-4"
+                              >
+                                {sub}
+                              </Link>
+                            ))}
+                            <Link
+                              href="#"
+                              className="text-sm font-semibold text-blue-600 pl-4 py-1 flex items-center gap-1"
                             >
-                              <span className="text-base">{category.icon}</span>
-                              {category.name}
-                            </Button>
-                          </SheetClose>
-                        ))}
-                      </div>
+                              View All <ArrowRight className="h-3 w-3" />
+                            </Link>
+                          </div>
+                        </details>
+                      ))}
                     </div>
-                    <div className="mt-6 pt-4 border-t dark:border-gray-800">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-2"
-                        onClick={() =>
-                          setTheme(theme === "dark" ? "light" : "dark")
-                        }
-                      >
-                        {theme === "dark" ? (
-                          <Sun className="h-5 w-5" />
-                        ) : (
-                          <Moon className="h-5 w-5" />
-                        )}
-                        Switch to {theme === "dark" ? "Light" : "Dark"} Mode
+
+                    {/* Mobile Account Section */}
+                    <div className="mt-auto bg-slate-50 dark:bg-slate-900 rounded-xl p-4">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
+                          <User className="h-5 w-5 text-slate-500" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">My Account</p>
+                          <p className="text-xs text-slate-500">
+                            Sign in for better experience
+                          </p>
+                        </div>
+                      </div>
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                        Sign In / Register
                       </Button>
                     </div>
                   </div>
                 </SheetContent>
               </Sheet>
 
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                  <ShoppingCart className="h-6 w-6" />
-                  <span className="hidden sm:inline">igen</span>
-                </h1>
-
-                {/* Desktop Menu Button */}
-                <Button
-                  variant="ghost"
-                  className="hidden md:flex items-center gap-1 px-3 py-2"
-                  onClick={toggleMegaMenu}
-                  aria-expanded={isMegaMenuOpen}
-                >
-                  <Menu className="h-5 w-5" />
-                  <span className="font-medium">Categories</span>
-                </Button>
-              </div>
+              <Link href="/" className="group flex items-center gap-2">
+                <div className="bg-blue-600 text-white p-1.5 rounded-lg group-hover:bg-blue-700 transition-colors">
+                  <ShoppingCart className="h-5 w-5" />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  igen<span className="text-blue-600">.</span>
+                </span>
+              </Link>
             </div>
 
-            {/* Search Bar - Hidden on mobile */}
-            <div className="flex-1 max-w-2xl mx-4 hidden md:block">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  type="search"
-                  placeholder="Search products and more..."
-                  className="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 rounded-full"
+            {/* Desktop Navigation (Unchanged) */}
+            <div className="hidden lg:flex items-center">
+              <Button
+                variant="ghost"
+                className={cn(
+                  "gap-2 font-medium text-sm h-10 px-4 rounded-full transition-all",
+                  isMegaMenuOpen
+                    ? "bg-slate-100 dark:bg-slate-800 text-blue-600"
+                    : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                )}
+                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+              >
+                <MenuSquareIcon className="h-4 w-4" />
+                Categories
+                <ChevronDown
+                  className={cn(
+                    "h-3 w-3 transition-transform duration-300",
+                    isMegaMenuOpen && "rotate-180"
+                  )}
                 />
-                <Button className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1 h-7 text-sm">
-                  Search
-                </Button>
+              </Button>
+
+              <nav className="flex items-center gap-1 ml-2">
+                {["Deals", "What's New", "Delivery"].map((item) => (
+                  <Button
+                    key={item}
+                    variant="ghost"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-full"
+                  >
+                    {item}
+                  </Button>
+                ))}
+              </nav>
+            </div>
+
+            {/* Modern Search Bar (Hidden on Mobile/Small, Visible on Medium+) */}
+            <div className="flex-1 hidden md:flex justify-center max-w-lg mx-auto">
+              <div className="relative w-full group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                </div>
+                <Input
+                  placeholder="Search for products..."
+                  className="pl-10 pr-12 h-11 rounded-full bg-slate-100 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50/50 dark:bg-slate-900 dark:focus:bg-slate-950 transition-all duration-300"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                  <Button
+                    size="sm"
+                    className="h-8 rounded-full px-3 bg-blue-600 hover:bg-blue-700 text-xs"
+                  >
+                    Search
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2">
-              {/* Theme Toggle Button */}
+            <div className="flex items-center gap-1 sm:gap-2 ml-auto">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="hidden md:flex"
+                className="hidden sm:flex text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
               >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
+                <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               </Button>
 
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Search className="h-5 w-5" />
-              </Button>
+              <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1 hidden sm:block"></div>
 
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <User className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full text-slate-600 dark:text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                >
+                  <Heart className="h-5 w-5" />
+                </Button>
 
-              <Button
-                variant="ghost"
-                className="hidden md:flex items-center gap-2"
-              >
-                <User className="h-5 w-5" />
-                <span className="hidden lg:inline">Sign Up/Sign In</span>
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full relative text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                  </span>
+                </Button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden relative"
-                onClick={handleWishlistClick}
-              >
-                <Heart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                  3
-                </span>
-              </Button>
-
-              <Button
-                onClick={handleWishlistClick}
-                variant="ghost"
-                className="hidden md:flex items-center gap-2 relative"
-              >
-                <Heart className="h-5 w-5" />
-                <span className="hidden md:inline">Wishlist</span>
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                  3
-                </span>
-              </Button>
-
-              <Button
-                onClick={() => router.push("/cart")}
-                variant="ghost"
-                size="icon"
-                className="relative"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                  5
-                </span>
-              </Button>
+                <Button
+                  variant="ghost"
+                  className="hidden sm:flex items-center gap-2 rounded-full pl-2 pr-4 ml-1 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                >
+                  <div className="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+                    <User className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <span className="text-sm font-medium">Account</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Mega Menu - Appears when clicking the Categories button */}
-      {isMegaMenuOpen && (
+        {/* 3. MEGA MENU (Unchanged for Desktop) */}
         <div
-          className={`mega-menu-container hidden md:block absolute top-full left-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg z-40 transition-all duration-300 ease-in-out ${isClosing ? "opacity-0 -translate-y-4" : "opacity-100 translate-y-0"}`}
+          className={cn(
+            "absolute top-full left-0 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300 ease-in-out origin-top z-30",
+            isMegaMenuOpen
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-2 invisible pointer-events-none"
+          )}
         >
-          <div className="max-w-7xl mx-auto px-4 py-6">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                All Categories
-              </h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={closeMegaMenu}
-                className="rounded-full"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+          <div className="max-w-7xl mx-auto flex h-[450px]">
+            {/* Sidebar: Categories */}
+            <div className="w-1/4 border-r border-slate-100 dark:border-slate-900 py-6 pr-4">
+              <div className="space-y-1">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onMouseEnter={() => setHoveredCategory(cat.name)}
+                    className={cn(
+                      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
+                      hoveredCategory === cat.name
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900"
+                    )}
+                  >
+                    <span className="flex items-center gap-3">
+                      {cat.icon}
+                      {cat.name}
+                    </span>
+                    {hoveredCategory === cat.name && (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-8 px-4">
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
+                  <p className="text-xs text-slate-500 font-semibold uppercase mb-2">
+                    Need Help?
+                  </p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
+                    Call our expert sales team for advice.
+                  </p>
+                  <span className="text-blue-600 font-bold text-lg">
+                    +1 800 555 0199
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex gap-8">
-              {/* Categories List */}
-              <div className="w-1/3">
-                <div className="space-y-1 border-r border-gray-200 dark:border-gray-800 pr-4">
-                  {categories.map((category) => (
+            {/* Content Area: Subcategories & Features */}
+            <div className="w-3/4 p-8">
+              {categories.map((cat) => (
+                <div
+                  key={cat.name}
+                  className={cn(
+                    "grid grid-cols-12 gap-8 h-full transition-opacity duration-300",
+                    hoveredCategory === cat.name
+                      ? "opacity-100 flex"
+                      : "opacity-0 hidden"
+                  )}
+                >
+                  {/* Sub Links */}
+                  <div className="col-span-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        {cat.name}
+                      </h2>
+                      <Badge
+                        variant="secondary"
+                        className="font-normal text-xs"
+                      >
+                        {cat.subcategories.length} Collections
+                      </Badge>
+                    </div>
+                    <p className="text-slate-500 mb-8 max-w-md">
+                      {cat.description}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                      {cat.subcategories.map((sub) => (
+                        <Link
+                          key={sub}
+                          href="#"
+                          className="group flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors"
+                        >
+                          <div className="h-1.5 w-1.5 rounded-full bg-slate-300 group-hover:bg-blue-500 transition-colors"></div>
+                          {sub}
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="mt-12 flex items-center gap-2 text-sm font-semibold text-blue-600 cursor-pointer group">
+                      View all {cat.name} products
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </div>
+
+                  {/* Visual / Promo Card */}
+                  <div className="col-span-4 h-full">
                     <div
-                      key={category.name}
-                      className={`group flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all duration-200 ${hoveredCategory === category.name ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
-                      onMouseEnter={() => setHoveredCategory(category.name)}
+                      className={cn(
+                        "h-full w-full rounded-2xl p-6 flex flex-col justify-end relative overflow-hidden group cursor-pointer",
+                        cat.featuredBg
+                      )}
                     >
-                      <span className="text-xl transition-transform duration-200 group-hover:scale-110">
-                        {category.icon}
-                      </span>
-                      <span className="font-medium transition-all duration-200 group-hover:translate-x-1">
-                        {category.name}
-                      </span>
-                      <ChevronDown
-                        className={`h-4 w-4 ml-auto transition-transform duration-200 ${hoveredCategory === category.name ? "rotate-180" : ""}`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Subcategories and Image */}
-              <div className="w-2/3">
-                {hoveredCategory ? (
-                  <div className="animate-fadeIn">
-                    <div className="flex gap-6">
-                      <div className="w-2/3">
-                        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                          {
-                            categories.find((c) => c.name === hoveredCategory)
-                              ?.name
-                          }
+                      <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2">
+                        <Badge className="bg-white/90 text-black hover:bg-white mb-2 shadow-sm backdrop-blur-sm">
+                          New Arrival
+                        </Badge>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1">
+                          Premium Collection
                         </h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {categories
-                            .find((c) => c.name === hoveredCategory)
-                            ?.subcategories.map((subcategory) => (
-                              <Link
-                                key={subcategory}
-                                href="#"
-                                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                                onClick={closeMegaMenu}
-                              >
-                                {subcategory}
-                              </Link>
-                            ))}
-                        </div>
-                        <div className="mt-4">
-                          <Link
-                            href="#"
-                            className="inline-flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline transition-all duration-200 hover:translate-x-1"
-                            onClick={closeMegaMenu}
-                          >
-                            View All {hoveredCategory}
-                            <ChevronDown className="h-4 w-4 ml-1 rotate-90" />
-                          </Link>
-                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-300">
+                          Upgrade your setup today.
+                        </p>
                       </div>
-                      <div className="w-1/3">
-                        <div className="rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg">
-                          <div className="bg-gray-200 dark:bg-gray-700 h-40 flex items-center justify-center">
-                            <span className="text-gray-500 dark:text-gray-400">
-                              {
-                                categories.find(
-                                  (c) => c.name === hoveredCategory,
-                                )?.name
-                              }{" "}
-                              Image
-                            </span>
-                          </div>
-                        </div>
-                        <div className="mt-3 text-center">
-                          <Button
-                            size="sm"
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                          >
-                            Shop Now
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400 animate-pulse">
-                    <div className="text-center">
-                      <LayoutGrid className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                      <p>Hover over a category to see products</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
-              <div className="flex flex-wrap gap-6">
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span>Popular Items</span>
+                      {/* Abstract Shapes/Image placeholder */}
+                      <div className="absolute top-0 right-0 p-8 opacity-50 dark:opacity-30">
+                        {cat.icon}{" "}
+                        {/* Using the icon as a background graphic for now */}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer">
-                  <Clock className="h-4 w-4 text-blue-500" />
-                  <span>New Arrivals</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer">
-                  <Award className="h-4 w-4 text-orange-500" />
-                  <span>Best Sellers</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer">
-                  <Shield className="h-4 w-4 text-green-500" />
-                  <span>Quality Assured</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      )}
+      </header>
 
-      <style jsx>{`
-                .hide-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-                .hide-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                
-                .animate-fadeIn {
-                    animation: fadeIn 0.3s ease-in-out;
-                }
-            `}</style>
-    </header>
+      {/* Overlay for focus */}
+      {isMegaMenuOpen && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-30 top-[148px]" />
+      )}
+    </div>
+  );
+}
+
+function MenuSquareIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M7 8h10" />
+      <path d="M7 12h10" />
+      <path d="M7 16h10" />
+    </svg>
   );
 }
