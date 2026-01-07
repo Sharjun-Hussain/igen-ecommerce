@@ -11,6 +11,8 @@ import FlashDealComponent from "@/Sections/FlashDeals/FlashDeals";
 import BrandsSection from "@/Sections/Brands/BrandsInfinity";
 import BrandShowcaseEnhanced from "@/Sections/Brands/BrandsInfinity";
 import NewArrivalsSection from "@/Sections/NewArrivals/NewArrival";
+import BentoGridSection from "@/Sections/BentoGrid/BentoGrid";
+import TrendingSection from "@/Sections/Trending/Trending";
 
 const page = () => {
   return (
@@ -26,7 +28,9 @@ const page = () => {
         <FlashDealComponent />
         <ProductDealsSection title="Smart Phones" products={laptopDeals} />
         <BrandShowcaseEnhanced />
-        <NewArrivalsSection />
+        <BentoGridSection/>
+        <TrendingSection/>
+        {/* <NewArrivalsSection /> */}
       </div>
       <Footer />
     </Fragment>
